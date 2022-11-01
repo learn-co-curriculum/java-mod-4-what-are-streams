@@ -7,35 +7,39 @@
 
 ## What is a Stream?
 
-The Stream API was introduced in Java 8. It allows us to write more declarative
-code which makes it significantly more readable. Furthermore, it makes
-parallelization a lot easier.
+A stream takes a data source (array, collection, file, I/O channel, other streams),
+and processes the elements using a sequence of operations combined
+into a single pipeline. Streams don’t change the underlying data source;
+rather, they provide a result based on the pipelined methods.
 
-A stream takes a source (collection, file, I/O channel, other streams),
-processes the elements using a sequence of operations combined into a single
-pipeline.
+Declarative programming is a programming paradigm that abstracts away
+explicit control flow (conditionals, loops)
+and instead focuses on stating what the task or desired outcome is.
+The Stream API was introduced in Java 8.  It allows us to write declarative
+and thus more readable code when working with collections and other data sources. 
+The Stream API also makes parallelization a lot easier.
 
 We can work with streams in 3 stages:
 
-1. Create a stream from a source
-2. Perform intermediate operations to process the data
-3. Perform a terminal operation to produce a result
+1. Create a stream from a source.
+2. Perform intermediate operations to process the data.
+3. Perform a terminal operation to produce a result.
 
 Intermediate operations always return a new stream. We need to perform terminal
 operations to get a result or perform a side-effect.
 
 ## Stream Creation
 
-There are several ways of creating streams. Some of the common ones are:
+There are several ways of creating streams. The common ones are:
 
-1. Calling the `stream()` method on collections
-2. Creating a stream from arrays using `Arrays.stream`
-3. Creating streams directly from values
+1. Creating a stream from a Collection using `stream()`.
+2. Creating a stream from arrays using `Arrays.stream()`.
+3. Creating streams directly from values using `Stream.of()`.
 
-### Creating Streams from Collections
+### Creating a stream from a Collection 
 
-All collections have a `stream()` method for creating streams. This is the most
-common way to create streams.
+All classes that implement `Collection` have a `stream()` method
+for creating streams. This is the most common way to create streams.
 
 ```java
 import java.util.List;
@@ -94,6 +98,37 @@ public class Example {
 }
 ```
 
+
+### `IntStream` vs `Stream<Integer>`
+
+When should we declare a stream to have type `IntStream` versus `Stream<Integer>`?
+
+- A stream created from primitive values (int, double, long) should
+  be declared using a primitive stream `IntStream`, `DoubleStream`, and `LongStream`.
+- A stream created from objects of type `T` should be declared using an object stream `Stream<T>`.
+
+For example:
+
+```java
+    public static void main(String[] args) {
+
+        //int[] --> IntStream
+        int[] array1 = {28, 43, 19, 100};
+        //IntStream since the array holds primitive int not Integer
+        IntStream stream1 = Arrays.stream(array1);
+
+        //Integer[] --> Stream<Integer>
+        Integer[] array2 = {28, 43, 19, 100};  //autobox each int to Integer
+        //Stream<Integer> since the array holds Integer class instances (autoboxed)
+        Stream<Integer> stream2 = Arrays.stream(array2);
+
+        //List<Integer> --> Stream<Integer>
+        List<Integer> list1 = List.of(12, 55, 37, 9);
+        Stream<Integer> stream3 = list1.stream();
+
+    }
+```
+
 ## Stream Example
 
 Let’s solve a problem using both loops and streams to see just how much better
@@ -111,7 +146,14 @@ public class Example {
 }
 ```
 
-### Loop Solution
+### Explicit Loop and Conditional Solution
+
+Before the introduction of streams, we must provide explicit instruction for every step of the algorithm:
+
+1. Initialize variable `evenCount` to 0.
+2. Use a for loop to assign variable `num` to each value in the list.
+3. Use a conditional statement to test parity of `num`.
+4. Increment `evenCount`.
 
 ```java
 public class Example {
@@ -128,7 +170,15 @@ public class Example {
 }
 ```
 
+ 
 ### Stream Solution
+
+The stream solution supports a declarative programming style that is much
+more readable and easier to read than the loop based solution.
+
+1. Create a stream from the list.
+2. Filter the get the even numbers.
+3. Count the filtered values.
 
 ```java
 public class Example {
@@ -142,6 +192,12 @@ public class Example {
 }
 ```
 
-The stream solution is much more readable and easier to read than the loop based
-solution. We’ll see later that there are several stream operations that make
+We’ll see later that there are several stream operations that make
 working with data a breeze!
+
+
+## Resources
+
+[Java 11 Arrays](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Arrays.html)  
+[Java 11 Collection](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Collection.html)  
+[Java 11 Stream](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/stream/Stream.html)
